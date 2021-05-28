@@ -10,6 +10,12 @@ const routes = [
     meta: { layout: 'Main' },
     component: () => import('../views/Home.vue')
   },
+  {
+    path: '/new',
+    name: 'Record',
+    meta: { layout: 'Main' },
+    component: () => import('../views/Record.vue')
+  },
 /*   {
     path: '/category',
     name: 'Category',

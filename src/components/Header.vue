@@ -3,7 +3,7 @@
     <div class="header__navbar">
       <div class="header__navbar_left">
         <div class="burger" @click="sidebar()"><img src="@/assets/burger-icon.svg" alt=""></div>
-        <div class="date_wrapper">12.12.12</div>
+        <div class="date_wrapper">{{curDate | date("datetime")}}</div>
       </div>
       <div class="header__navbar_right">
         <el-dropdown split-button type="primary">
@@ -26,10 +26,18 @@ export default {
   name: 'Header',
   components: {
   },
+  data: () => ({
+    curDate : new Date()
+  }),
   methods: {
     sidebar(){
       this.$store.state.sidebarOpen = !this.$store.state.sidebarOpen
     }
+  },
+  mounted(){
+    setInterval(() => {
+      this.curDate = new Date()
+    }, 1000)
   }
 }
 </script>
