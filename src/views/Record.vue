@@ -1,16 +1,15 @@
 <template>
   <div class="form_wrapper">
-      <div class="record_form">
-          
-      </div>
-      <input type="text" name="">
+      <AddProduct/>
   </div>
 </template>
 
 <script>
+import AddProduct from '@/components/AddProduct'
 export default {
-  name: 'Home',
+  name: 'Record',
   components: {
+    AddProduct
   }
 }
 </script>
@@ -19,6 +18,9 @@ export default {
 <style lang="scss" scoped>
     .form_wrapper{
         width: 100%;
+        height: 100%;
         display: flex;
+        justify-content: center;
+        align-items: flex-start;
     }
 </style>

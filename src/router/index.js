@@ -16,12 +16,12 @@ const routes = [
     meta: { layout: 'Main' },
     component: () => import('../views/Record.vue')
   },
-/*   {
+  {
     path: '/category',
     name: 'Category',
-    meta: { layout: 'Category' },
-    component: () => import('../views/About.vue')
-  }, */
+    meta: { layout: 'Main' },
+    component: () => import('../views/category.vue')
+  },
   {
     path: '/*',
     name: '404',
