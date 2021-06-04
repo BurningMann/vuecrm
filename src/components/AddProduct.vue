@@ -6,6 +6,9 @@
                 <input type="text" name="name" v-model="name" class="record_form__fild" placeholder="Название товара">
               </label>
           </div>
+                    <div class="record_form__line">
+              <button type="submit" class="record_form__button">Send</button>
+          </div>
           <div class="record_form__line">
               <p>Процессор:</p>
               <label>
@@ -91,9 +94,7 @@
                     <input type="checkbox" v-model="active">
                 </label>
             </div>
-          <div class="record_form__line">
-              <button type="submit" class="record_form__button">Send</button>
-          </div>
+
           
       </form>
 </template>
@@ -137,24 +138,11 @@ export default {
                 gurancy_duration: this.gurancy_duration,
                 description: this.description,
                 active: this.active,
+                date: new Date()
             })
             .then(docRef => this.$router.push('/'))
             .catch(error => console.log(err))
         }
-    },
-    created () {
-
-        db.collection('products').get().then(querySnapshot => {
-    /*             querySnapshot.forEach(doc => {
-                    const data ={
-                        'id': doc.id,
-                        'img': doc.data().img,
-                        'name': doc.data().name,
-                        'text': doc.data().text,
-                    }
-                    this.products.push(data)
-                }); */
-        })
     },
 }
 </script>
