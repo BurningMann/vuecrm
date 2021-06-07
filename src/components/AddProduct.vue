@@ -6,7 +6,10 @@
                 <input type="text" name="name" v-model="name" class="record_form__fild" placeholder="Название товара">
               </label>
           </div>
-                    <div class="record_form__line">
+          <div class="record_form__line">
+             <input type="file" accept="image/*" @change="uploadImage($event)" id="file-input">
+          </div>
+          <div class="record_form__line">
               <button type="submit" class="record_form__button">Send</button>
           </div>
           <div class="record_form__line">
@@ -101,6 +104,7 @@
 
 <script>
 import db from './firebaseInit'
+import axios from 'axios';
 export default {
     name: 'AddProduct',
     data () {
@@ -142,6 +146,31 @@ export default {
             })
             .then(docRef => this.$router.push('/'))
             .catch(error => console.log(err))
+        },
+        uploadImage(event) {
+
+          const URL = '/img/'; 
+          
+          let data = new FormData();
+          data.append('name', 'my-picture');
+          data.append('file', event.target.files[0]); 
+          console.log(data)
+          console.log(event.target.files[0])
+          let config = {
+            header : {
+              'Content-Type' : 'image/png'
+            }
+          }
+
+          axios.put(
+            URL, 
+            data,
+            config
+          ).then(
+            response => {
+              console.log('image upload response > ', response)
+            }
+          )
         }
     },
 }

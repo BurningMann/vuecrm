@@ -6,9 +6,9 @@
                     Сортировать<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="name" class="active">По имени</el-dropdown-item>
-                    <el-dropdown-item command="date_new">По дате добавления (сначала новые)</el-dropdown-item>
-                    <el-dropdown-item command="date_old">По дате добавления (сначала старые)</el-dropdown-item>
+                    <el-dropdown-item command="name" :class="{'active': sort == 'name'}">По имени</el-dropdown-item>
+                    <el-dropdown-item command="date_new" :class="{'active': sort == 'date_new'}">По дате добавления (сначала новые)</el-dropdown-item>
+                    <el-dropdown-item command="date_old" :class="{'active': sort == 'date_old'}">По дате добавления (сначала старые)</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown trigger="click" @command="switchFilter" class="products_wrapper__button">
@@ -16,9 +16,9 @@
                     Фильтровать<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="">Все</el-dropdown-item>
-                    <el-dropdown-item command="active">Активные элементы</el-dropdown-item>
-                    <el-dropdown-item command="deactive">Неактивные элементы</el-dropdown-item>
+                    <el-dropdown-item command="" :class="{'active': filter == ''}">Все</el-dropdown-item>
+                    <el-dropdown-item command="active" :class="{'active': filter == 'active'}">Активные элементы</el-dropdown-item>
+                    <el-dropdown-item command="deactive" :class="{'active': filter == 'deactive'}">Неактивные элементы</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="success" class="check_button" v-if="currentFiltred.length != 0">
