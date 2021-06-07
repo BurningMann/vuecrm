@@ -23,6 +23,12 @@ const routes = [
     component: () => import('../views/category.vue')
   },
   {
+    path: '/category/*/',
+    name: 'Product',
+    meta: { layout: 'Main' },
+    component: () => import('../views/product.vue')
+  },
+  {
     path: '/*',
     name: '404',
     meta: { layout: 'Main' },

@@ -1,5 +1,6 @@
 <template>
   <div class="app-main-layout">
+    
     <Header/>
     <div class="layout_main_area" :class="{'sidebar_hidden': !this.$store.state.sidebarOpen}" >
       <div class="sidebar">
@@ -16,20 +17,27 @@
 <script>
 import Header from "@/components/Header"
 import Sidebar from "@/components/Sidebar"
+
 export default {
   name: 'MainLayout',
   components: {
-    Header,Sidebar
-  }
+    Header,Sidebar,
+  },
+  data(){
+    return {
+      preloader:true
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
   .layout_main_area{
     width: 100%;
-    height: calc(100vh - 70px);
+    min-height: calc(100vh - 70px);
     display: flex;
     .sidebar{
+      position: absolute;
       width: 250px;
       height: 100%;
       background: #FFFFFF;
@@ -39,10 +47,6 @@ export default {
     }
     .content{
       width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
       padding-left: 250px;
       background: #FFFFFF;
       transition: .5s;

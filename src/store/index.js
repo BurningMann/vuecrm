@@ -7,7 +7,10 @@ export default new Vuex.Store({
   state: {
     sidebarOpen : true,
     productSort : "date_new",
-    productFilter : ""
+    productFilter : "",
+    showPreloader: true,
+    searchProduct: "",
+    currentFiltred: []
   },
   mutations: {
   },

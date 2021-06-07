@@ -21,15 +21,23 @@
                     <el-dropdown-item command="deactive" :class="{'active': filter == 'deactive'}">Неактивные элементы</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="success" class="check_button" v-if="currentFiltred.length != 0">
+            <el-button type="success" class="check_button" v-if="currentFiltred.length != 0 && checkProducts.length < currentFiltred.length">
                 <label>
-                    <span v-if="checkProducts.length < currentFiltred.length">Выделить все элементы </span> 
-                    <span v-if="checkProducts.length == currentFiltred.length">Снять выделение со всех элементов</span>  
+                    <span>Выделить все элементы </span> 
                     <input type="checkbox" v-model="all"></label> 
             </el-button>
+            <el-button type="success" v-if="checkProducts.length <= currentFiltred.length && checkProducts.length !=0 " @click="checkProducts = []">
+                    <span>Снять выделение со всех элементов</span>  
+            </el-button>
             <el-button type="warning" v-if="checkProducts.length !=0" @click="activateCheckedProducts">Активировать выбранные элементы</el-button>
-            <el-button type="warning" v-if="checkProducts.length !=0" @click="dellCheckedProducts">Удалить выбранные элементы</el-button>
-            
+            <el-button type="warning" v-if="checkProducts.length !=0" @click="deActivateCheckedProducts">Деактивировать выбранные элементы</el-button>
+            <el-button type="danger" v-if="checkProducts.length !=0" @click="dellCheckedProducts">Удалить выбранные элементы</el-button>
+            <el-input
+                placeholder="Поиск"
+                prefix-icon="el-icon-search"
+                v-model="search"
+                clearable>
+            </el-input>
         </div>
         
         <div class="line"  v-for="product in resultProducts" :key="product.id">
@@ -41,7 +49,10 @@
                 <span v-else>Неактивен</span>
             </div>
             <div class="line__box">
-                <el-button type="primary">Подробнее</el-button>
+                <el-button type="primary" 
+                    @click="$router.push({ path: `/category/${product.name}/`, query: { productId: product.id }, })">
+                    Подробнее
+                </el-button>
                 <el-button type="danger" @click="dellProduct(product.name,product.id)">Удалить</el-button>
             </div>
         </div>
@@ -59,16 +70,24 @@ export default {
             checkProducts: [],
             currentFiltred: [],
             sort: "",
-            filter: ""
+            filter: "",
+            search: "",
         }
     },
     created () {
         this.getProducts()
     },
+    mounted(){
+        this.checkProducts = this.$store.state.currentFiltred
+    },
+    beforeDestroy(){
+        this.$store.state.currentFiltred = this.checkProducts
+    },
     computed:{
         resultProducts(){
             this.currentFiltred = this.filterProduct()
-            return this.sortProduct(this.currentFiltred)    
+            this.currentFiltred = this.sortProduct(this.currentFiltred)
+            return this.currentFiltred = this.searchProduct(this.currentFiltred)   
         },
         all: {
             get() {
@@ -92,14 +111,15 @@ export default {
             this.filter = command
         },
         getProducts(){
+            this.products = []
             db.collection('products').get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
-                    const data ={
+                const data ={
                         'id': doc.id,
                         'date': doc.data().date,
                         'name': doc.data().name,
                         'active': doc.data().active
-                    }
+                    }    
                     this.products.push(data)
                 });
             })
@@ -122,12 +142,11 @@ export default {
         },
 
         dellCheckedProducts(){
-            if(confirm(`Удалить выбранные товары ?`)){
+            if(confirm(`Удалить выбранные позиции (${this.checkProducts.length}) ?`)){
                 db.collection('products').get().then(querySnapshot => {
                     querySnapshot.forEach(doc => {
                         if(this.checkProducts.includes(doc.id)){
-                            doc.ref.delete()  
-                            console.log()
+                            doc.ref.delete()
                             this.products.map((element,index) =>{
                                 if(element.id == doc.id){
                                     this.products.splice(index,1)
@@ -141,19 +160,21 @@ export default {
         },
         activateCheckedProducts(){
             if(confirm(`Активировать выбранные товары ?`)){
-                db.collection('products').get().then(querySnapshot => {
-                    querySnapshot.forEach(doc => {
-                        /* if(this.checkProducts.includes(doc.id)){
-                            doc.data().active.udate(true)
-                            this.products.map((element,index) =>{
-                                if(element.id == doc.id){
-                                    this.products.splice(index,1)
-                                }
-                            })  
-                        } */
-                    });
+                this.checkProducts.map((element)=>{
+                    db.collection('products').doc(element).update({active:true})
                 })
+                this.checkProducts = []
+                this.getProducts()
             }
+        },
+        deActivateCheckedProducts(){
+            if(confirm(`Деактивировать выбранные товары ?`)){
+                this.checkProducts.map((element)=>{
+                    db.collection('products').doc(element).update({active:false})
+                })
+                this.checkProducts = []
+                this.getProducts()
+            } 
         },
         sortProduct(filtred){
             this.sort = this.$store.state.productSort
@@ -185,7 +206,7 @@ export default {
                     if(element.active){
                         filtredProducts.push(element)
                     }
-                })
+            })
             return filtredProducts
             }else if(this.filter == "deactive"){
                 newprod.map((element)=>{
@@ -198,6 +219,22 @@ export default {
             return this.products    
         },
 
+        searchProduct(searching){
+            this.$store.state.searchProduct = this.search 
+            let searchingProducts = []
+            if( this.search != ""){
+                searching.map((element)=>{
+                    if(element.name.indexOf(this.search) != -1){
+                        searchingProducts.push(element)
+                    }
+                })
+                return searchingProducts
+            }else{
+                return searching 
+            }
+            
+        }
+
     }
 }
 </script>
@@ -208,9 +245,6 @@ export default {
         display: flex;
         flex-direction: column;
         padding: 20px;
-        &__button{
-            margin-right: 10px;
-        }
     }
     .line{
         display: flex;
@@ -231,6 +265,7 @@ export default {
     }
     .check_button{
         padding: 0;
+        margin-right: 10px;
     }
     .check_button label{
         padding: 12px 20px;
@@ -240,7 +275,11 @@ export default {
     .check_button input{
         display: none;
     }
-
+    .el-button{
+        margin-left: 0;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
     .el-dropdown-menu__item.active{
         background-color: #ecf5ff;
         color: #66b1ff;

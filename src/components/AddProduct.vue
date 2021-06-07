@@ -7,10 +7,15 @@
               </label>
           </div>
           <div class="record_form__line">
-             <input type="file" accept="image/*" @change="uploadImage($event)" id="file-input">
-          </div>
-          <div class="record_form__line">
-              <button type="submit" class="record_form__button">Send</button>
+            <p>Детальное изображение:</p>
+            <label class="image_add_line">
+              <div class="image_add_box" :class="{'file_open': image != ''}">
+                  <img :src="image">
+              </div>
+              <input type="file" accept="image/*" @change="onFileChange">
+            </label>
+            <div class="dell_current_img" @click="dellImg" v-if="image != ''">Удалить картинку</div>
+             
           </div>
           <div class="record_form__line">
               <p>Процессор:</p>
@@ -97,7 +102,9 @@
                     <input type="checkbox" v-model="active">
                 </label>
             </div>
-
+          <div class="record_form__line">
+              <button type="submit" class="record_form__button">Send</button>
+          </div>
           
       </form>
 </template>
@@ -123,6 +130,8 @@ export default {
             gurancy_duration: "",
             description: "",
             active: false,
+            image: "",
+            imageName: "",
         }
 
     },
@@ -130,6 +139,7 @@ export default {
         saveItem(){
             db.collection('products').add({
                 name: this.name,
+                image: this.imageName,
                 processor_name: this.processor_name,
                 processor_type: this.processor_type,
                 ram_name: this.ram_name,
@@ -146,23 +156,37 @@ export default {
             })
             .then(docRef => this.$router.push('/'))
             .catch(error => console.log(err))
+            /* let formData = new FormData();
+            formData.append('file', this.file);
+            axios.post('/img/',
+                formData,
+                {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'token': '030303039jddjdj'
+                }
+              }
+            ).then(function(data){
+              console.log(data.data);
+            })
+            .catch(function(){
+              console.log('FAILURE!!');
+            }); */
         },
-        uploadImage(event) {
+        /* uploadImage(event) {
 
           const URL = '/img/'; 
           
           let data = new FormData();
           data.append('name', 'my-picture');
           data.append('file', event.target.files[0]); 
-          console.log(data)
-          console.log(event.target.files[0])
           let config = {
             header : {
               'Content-Type' : 'image/png'
             }
           }
 
-          axios.put(
+          axios.post(
             URL, 
             data,
             config
@@ -171,7 +195,28 @@ export default {
               console.log('image upload response > ', response)
             }
           )
-        }
+        } */
+        
+        onFileChange(e) {
+          var files = e.target.files || e.dataTransfer.files;
+          if (!files.length)
+            return;
+          this.imageName = files[0].name
+          this.createImage(files[0]);
+        },
+        createImage(file) {
+          var image = new Image();
+          var reader = new FileReader();
+          var vm = this;
+
+          reader.onload = (e) => {
+            vm.image = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        },
+        dellImg(){
+          this.image = ""
+        },
     },
 }
 </script>
@@ -223,5 +268,46 @@ export default {
         cursor:pointer;
         box-shadow: 0 0 5px 0 rgba(0,0,0,.5);
       }
+    }
+    .image_add_line{
+      width: max-content;
+      margin: 0 auto;
+      input{
+        display: none;
+      }
+    }
+    .image_add_box{
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 5px 0 rgba(0,0,0,.5);
+      cursor:pointer;
+      padding: 10px;
+      border-radius: 5px;
+      &::before{
+        content:"+";
+        font-size: 30px;
+      }
+      &.file_open{
+        &::before{
+          display: none;
+        }
+      }
+      img{
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+    .dell_current_img{
+      width: 300px;
+      margin: 15px auto 0;
+      background: #FFFFFF;
+      padding: 10px 0;
+      text-align: center;
+      cursor: pointer;
     }
 </style>
