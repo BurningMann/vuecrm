@@ -11,22 +11,28 @@ const routes = [
     component: () => import('../views/Home.vue')
   },
   {
-    path: '/new',
+    path: '/new/',
     name: 'Record',
     meta: { layout: 'Main' },
     component: () => import('../views/Record.vue')
   },
   {
-    path: '/category',
+    path: '/category/',
     name: 'Category',
     meta: { layout: 'Main' },
     component: () => import('../views/category.vue')
   },
   {
-    path: '/category/*/',
+    path: '/product/',
     name: 'Product',
     meta: { layout: 'Main' },
     component: () => import('../views/product.vue')
+  },
+  {
+    path: '/settings/',
+    name: 'Settings',
+    meta: { layout: 'Main' },
+    component: () => import('../views/settings.vue')
   },
   {
     path: '/*',

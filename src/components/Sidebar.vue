@@ -21,8 +21,9 @@ export default {
   data: () => ({
     links: [
       { title: 'Главная', url: '/', exact: true },
-      { title: 'Товары', url: '/category' },
-      { title: 'Новая запись', url: '/new' },
+      { title: 'Товары', url: '/category/' },
+      { title: 'Новая запись', url: '/new/' },
+      { title: 'Настройки', url: '/settings/' },
     ],
   }),
   methods: {

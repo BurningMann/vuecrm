@@ -10,7 +10,8 @@ export default new Vuex.Store({
     productFilter : "",
     showPreloader: true,
     searchProduct: "",
-    currentFiltred: []
+    currentFiltred: [],
+    gridState : "line",
   },
   mutations: {
   },
