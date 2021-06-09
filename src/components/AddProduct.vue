@@ -34,128 +34,21 @@
         <button type="submit" class="record_form__button">Добавить</button>
     </div>
 
-    <div class="record_form__line">
-      <p>Процессор:</p>
-      <label>
-        <span>Название</span>
-        <input type="text" 
-          v-model="processor_name" 
-          class="record_form__fild" 
-          placeholder="Название"
-        >
+    <div class="record_form__line" v-for="field in FIELDS " :key="field.key">
+      <p>{{field.field_name}}:</p>
+      <label v-if="field.field_type == 'text'">
+        <el-input placeholder="Please input" v-model="fieldsId[field.field_id]"></el-input>
       </label>
-      <label>
-        <span>Производитель</span>
-        <select 
-          v-model="processor_type" 
-          class="record_form__fild"
-        >
-          <option value="Intel">Intel</option>
-          <option value="AMD">AMD</option>
-        </select>
+      <label v-if="field.field_type == 'select'">
+        <el-select v-model="fieldsId[field.field_id]" placeholder="Select">
+          <el-option
+            v-for="item in field.fields_list"
+            :key="item.key"
+            :label="item.value"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </label>
-    </div>
-
-    <div class="record_form__line">
-        <p>Оперативная память:</p>
-        <label>
-          <span>Название</span>
-          <input type="text" 
-            v-model="ram_name" 
-            class="record_form__fild" 
-            placeholder="Название"
-          >
-        </label>
-    </div>
-
-    <div class="record_form__line">
-      <p>Видеокарта:</p>
-      <label>
-        <span>Название</span>
-        <input type="text" 
-          v-model="gpu_name" 
-          class="record_form__fild" 
-          placeholder="Название"
-        >
-      </label>
-      <label>
-        <span>Производитель</span>
-        <select 
-          v-model="gpu_type" 
-          class="record_form__fild"
-        >
-          <option value="Intel">NVIDIA</option>
-          <option value="AMD">AMD</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="record_form__line">
-        <p>SSD:</p>
-        <label>
-          <span>Название</span>
-          <input type="text" 
-            v-model="ssd_name" 
-            class="record_form__fild" 
-            placeholder="Название"
-          >
-        </label>
-        <label>
-          <span>Размер</span>
-          <select 
-            v-model="ssd_size" 
-            class="record_form__fild"
-          >
-            <option value="240">240 GB</option>
-            <option value="480">480 GB</option>
-            <option value="500">500 GB</option>
-          </select>
-        </label>              
-    </div>  
-
-    <div class="record_form__line">
-        <p>Жёсткий диск:</p>
-        <label>
-          <span>Название</span>
-          <input type="text" 
-            v-model="hdd_name" 
-            class="record_form__fild" 
-            placeholder="Название"
-          >
-        </label>
-        <label>
-          <span>Размер</span>
-          <select 
-            v-model="hdd_size" 
-            class="record_form__fild"
-          >
-            <option value="2">2 терробайта</option>
-            <option value="1">1 терробайт</option>
-          </select>
-        </label>
-    </div>  
-
-    <div class="record_form__line">
-      <p>Гарантия:</p>
-      <label>
-        <span>Длительность гарантии</span>
-        <select 
-          v-model="gurancy_duration" 
-          class="record_form__fild"
-        >
-          <option value="12">12 месяцев</option>
-          <option value="24">24 месяца</option>
-        </select>
-      </label>
-    </div>   
-
-    <div class="record_form__line">
-      <textarea name="description" 
-        v-model="description" 
-        class="record_form__fild" 
-        placeholder="Описание" 
-      >
-      </textarea>
     </div>
 
     <div class="record_form__line">
@@ -164,6 +57,7 @@
         <input type="checkbox" v-model="active">
       </label>
     </div>
+    <button @click.prevent="console()">Консоль</button>
   </form>
 </template>
 
@@ -171,31 +65,41 @@
 
 import db from './firebaseInit'
 import axios from 'axios';
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'AddProduct',
-  data () {
-    return {
-      id: "",
-      name: "",
-      processor_name: "",
-      processor_type: "",
-      gpu_name: "",
-      gpu_type: "",
-      ram_name: "",
-      ssd_name: "",
-      ssd_size: "",
-      hdd_name: "",
-      hdd_size: "",
-      gurancy_duration: "",
-      description: "",
-      active: false,
-      image: "",
-      imageName: "",
-    }
+  data: () => ({
+    fieldsId:{},
+    id: "",
+    name: "",
+    description: "",
+    active: false,
+    image: "",
+    imageName: "",
+  }),
+  created(){
   },
-
+  mounted(){
+    this.GET_FIELDS_FROM_BD()
+    this.FIELDS.map((element)=>{
+      this.fieldsId[element.field_id]
+    })
+  },
+  updated(){
+  },
+  computed: {
+    ...mapGetters([
+      "FIELDS"
+    ]),
+  },
   methods: {
+    ...mapActions([
+      "GET_FIELDS_FROM_BD"
+    ]), 
+    console(){
+      console.log(this.fieldsId)
+    },
     saveItem(){
       db.collection('products').add({
         name: this.name,
