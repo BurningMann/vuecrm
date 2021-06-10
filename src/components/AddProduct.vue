@@ -1,13 +1,9 @@
 <template>
-  <form class="record_form" @submit.prevent="saveItem">
+  <form class="record_form">
     <div class="record_form__line">
       <p>Название:</p>
       <label>
-        <input type="text" 
-          v-model="name" 
-          class="record_form__fild" 
-          placeholder="Название товара"
-        >
+        <el-input placeholder="Please input" v-model="name"></el-input>
       </label>
     </div>
 
@@ -29,33 +25,59 @@
         Удалить изображение
       </div>
     </div>
-
+    
     <div class="record_form__line">
-        <button type="submit" class="record_form__button">Добавить</button>
+      <p>Описание</p>
+      <el-input
+        type="textarea"
+        placeholder="Please input"
+        v-model="description"
+        class="description"
+        resize="none"
+        rows="7"
+        >
+      </el-input>
     </div>
 
     <div class="record_form__line" v-for="field in FIELDS " :key="field.key">
       <p>{{field.field_name}}:</p>
+
       <label v-if="field.field_type == 'text'">
-        <el-input placeholder="Please input" v-model="fieldsId[field.field_id]"></el-input>
+        <el-input placeholder="Please input" v-model="field.field_content"></el-input>
       </label>
-      <label v-if="field.field_type == 'select'">
-        <el-select v-model="fieldsId[field.field_id]" placeholder="Select">
+
+      <label v-if="field.field_type == 'select' || field.field_type == 'multiselect'">
+        <el-select v-model="field.field_content" placeholder="Select" :multiple="field.multiple">
           <el-option
             v-for="item in field.fields_list"
             :key="item.key"
-            :label="item.value"
-            :value="item.value">
+            :value="item.value"
+            >
           </el-option>
         </el-select>
       </label>
+
+      <label v-if="field.field_type == 'radio'">
+        <el-radio-group v-model="field.field_content">
+          <el-radio 
+            v-for="radio in field.fields_list"
+            :key="radio.key"
+            :label="radio.value"
+          >
+          </el-radio>
+        </el-radio-group>
+      </label>  
     </div>
 
     <div class="record_form__line">
       <label>
-        <span>Активный</span>
-        <input type="checkbox" v-model="active">
+        <p>Активный:</p>
+        <el-checkbox v-model="active" label="Товар активен ?" border></el-checkbox>
       </label>
+    </div>
+    
+    <div class="record_form__line">
+      <el-button round class="record_form__button" @click="saveItem">Добавить</el-button>
     </div>
     <button @click.prevent="console()">Консоль</button>
   </form>
@@ -70,7 +92,6 @@ import {mapActions, mapGetters} from 'vuex'
 export default {
   name: 'AddProduct',
   data: () => ({
-    fieldsId:{},
     id: "",
     name: "",
     description: "",
@@ -82,9 +103,6 @@ export default {
   },
   mounted(){
     this.GET_FIELDS_FROM_BD()
-    this.FIELDS.map((element)=>{
-      this.fieldsId[element.field_id]
-    })
   },
   updated(){
   },
@@ -98,30 +116,30 @@ export default {
       "GET_FIELDS_FROM_BD"
     ]), 
     console(){
-      console.log(this.fieldsId)
     },
     saveItem(){
+      let fields = []
+      this.FIELDS.map((element)=>{
+        fields.push({
+            field_type:element.field_type,
+            field_content:element.field_content,
+            field_name:element.field_name,
+            field_multi: element.multiple,
+            fields_list: element.fields_list
+        })  
+      })
       db.collection('products').add({
         name: this.name,
         image: this.imageName,
-        processor_name: this.processor_name,
-        processor_type: this.processor_type,
-        ram_name: this.ram_name,
-        gpu_name: this.gpu_name,
-        gpu_type: this.gpu_type,
-        ssd_name: this.ssd_name,
-        ssd_size: this.ssd_size,
-        hdd_name: this.hdd_name,
-        hdd_size: this.hdd_size,
-        gurancy_duration: this.gurancy_duration,
         description: this.description,
         active: this.active,
-        date: new Date()
+        date: new Date(),
+        fields: fields
       })
-      .then(docRef => this.$router.push('/'))
+      .then(docRef => this.$router.push('/category/'))
       .catch(error => console.log(err))
-
-        /* let formData = new FormData();
+    },
+            /* let formData = new FormData();
         formData.append('file', this.file);
         axios.post('/img/',
             formData,
@@ -137,7 +155,6 @@ export default {
         .catch(function(){
           console.log('FAILURE!!');
         }); */
-    },
       /* uploadImage(event) {
 
         const URL = '/img/'; 
@@ -173,9 +190,8 @@ export default {
     createImage(file) {
       var image = new Image();
       var reader = new FileReader();
-      var vm = this;
       reader.onload = (e) => {
-        vm.image = e.target.result;
+        this.image = e.target.result;
       };
       reader.readAsDataURL(file);
     },
@@ -200,10 +216,6 @@ export default {
         font-size: 20px;
         font-weight: 600;
       }
-      label{
-        display: flex;
-        flex-direction: column;
-      }
     }
     &__fild{
       width: 100%;
@@ -219,20 +231,13 @@ export default {
         line-height: 30px;
       }
     }
-    textarea{
-      height: 150px;
-      resize: none;
-    }
     &__button{
-      width: 100%;
-      background: white;
-      border: 0px solid black;
-      height: 50px;
-      border-radius: 30px;
+      width: 60%;
+      display: block;
+      margin: 0 auto;
+      align-self: unset;
       text-transform: uppercase;
       font-weight: 600;
-      cursor:pointer;
-      box-shadow: 0 0 5px 0 rgba(0,0,0,.5);
     }
   }
   .image_add_line{

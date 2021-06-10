@@ -94,9 +94,6 @@ export default {
     },{
       value: 'radio',
       label: 'Radio'
-    },{
-      value: 'checkbox',
-      label: 'Checkbox'
     },],
   }),
   computed: {
@@ -130,6 +127,8 @@ export default {
             fields_list: this.type != 'text' ? this.fields_list : [],
             current_fields_list: false,
             dialog: false,
+            multiple: this.type == 'multiselect' ? true : false,
+            field_content: this.type == 'text'||'select' ? "" : [],
           }
           this.FIELDS.push(newField_data)
           this.name = '',this.type='',this.sort='1',this.id='',this.fields_list=[{key:1,value:''},{key:2,value:''},{key:3,value:''},{key:4,value:''},]

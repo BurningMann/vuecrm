@@ -2,7 +2,7 @@
   <div class="fields_wrapper__box">
     <div class="fields_wrapper__line" v-for="field in sortFields" :key="field.field_id">
       <el-input placeholder="Название поля" v-model="field.field_name" class="field_name"></el-input>
-      <el-select v-model="field.field_type" placeholder="Тип поля">
+      <el-select v-model="field.field_type" placeholder="Тип поля" @change="field.multiple = changeMulti(field.field_type,field.multiple),field.field_content = changeFieldContentType(field.field_type)">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -82,9 +82,6 @@ export default {
     },{
       value: 'radio',
       label: 'Radio'
-    },{
-      value: 'checkbox',
-      label: 'Checkbox'
     },],
   }),
   mounted(){
@@ -139,6 +136,20 @@ export default {
         newarr.push(newobj)
       })
       return newarr
+    },
+    changeMulti(type,multi){
+      if(type != 'multiselect'){
+        return false
+      }else{
+        return true
+      }
+    },
+    changeFieldContentType(type){
+      if(type == 'multiselect'){
+        return []
+      }else{
+        return ""
+      }
     },
   },
 }
