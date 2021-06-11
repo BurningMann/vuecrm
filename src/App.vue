@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import CategoryLayout from '@/layouts/CategoryLayout'
+import LoginLayout from '@/layouts/LoginLayout'
 import MainLayout from '@/layouts/MainLayout'
 import Preloader from "@/components/Preloader"
 export default {
@@ -18,7 +18,7 @@ export default {
     }
   },
   components: {
-    CategoryLayout,MainLayout,Preloader
+    LoginLayout,MainLayout,Preloader
   },
   mounted(){
     this.$store.state.showPreloader = false

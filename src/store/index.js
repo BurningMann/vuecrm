@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import db from '@/components/firebaseInit'
+import auth from './auth'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -13,10 +15,17 @@ export default new Vuex.Store({
     currentFiltred: [],
     gridState : "line",
     fields_data: [],
+    error: null
   },
   mutations: {
     SET_FIELDS_TO_STATE: (state, fields_data) => {
       state.fields_data = fields_data
+    },
+    setError(state, error) {
+      state.error = error
+    },
+    clearError(state) {
+      state.error = null
     }
   },
   actions: {
@@ -33,8 +42,10 @@ export default new Vuex.Store({
   getters:{
     FIELDS(state){
       return state.fields_data
-    }
+    },
+    error: s => s.error
   },
   modules: {
+    auth
   }
 })

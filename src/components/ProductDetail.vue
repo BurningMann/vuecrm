@@ -1,6 +1,12 @@
 <template>
   <form class="detailProductForm">
-    <h1>{{curentItem.name}}</h1>
+    <h1><el-input 
+            placeholder="Please input" 
+            v-model="curentItem.name" 
+            class="page_h1"
+          >
+          </el-input>
+    </h1>
     <div class="product_content">
       <div class="product_content__element product_content__element--img">
         <div class="product_content__img_box">
@@ -250,7 +256,13 @@ padding: 0 40px 100px;
   display: flex;
   justify-content: flex-end;
 }
-h1{
+.page_h1{
+    font-size: 30px;
+    font-weight: bold;
+    color: #000;
     text-align: left;
+    .el-input__inner{
+      color: #000;
+    }
 }
 </style>

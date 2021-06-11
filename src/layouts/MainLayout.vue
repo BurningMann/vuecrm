@@ -15,8 +15,11 @@
 </template>
 
 <script>
+
 import Header from "@/components/Header"
 import Sidebar from "@/components/Sidebar"
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   name: 'MainLayout',
@@ -27,6 +30,11 @@ export default {
     return {
       preloader:true
     }
+  },
+  mounted(){
+/*     if(!firebase.auth().currentUser){
+      this.$router.push('/login/')
+    } */
   },
 }
 </script>

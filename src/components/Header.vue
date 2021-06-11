@@ -6,39 +6,57 @@
         <div class="date_wrapper">{{curDate | date("datetime")}}</div>
       </div>
       <div class="header__navbar_right">
-        <el-dropdown split-button type="primary">
-          Username
+        <el-dropdown split-button type="primary" @command="handleCommand">
+          {{userName}}
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>Action 1</el-dropdown-item>
-            <el-dropdown-item>Action 2</el-dropdown-item>
-            <el-dropdown-item>Action 3</el-dropdown-item>
-            <el-dropdown-item>Action 4</el-dropdown-item>
+            <el-dropdown-item command="profile">Профиль</el-dropdown-item>
+            <el-dropdown-item command="logout">Выйти</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
   </header>
-
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
+
 export default {
   name: 'Header',
   components: {
   },
   data: () => ({
-    curDate : new Date()
+    curDate : new Date(),
   }),
+  computed:{
+    userName(){
+      if(firebase.auth()){
+        return firebase.auth().currentUser.email
+      }
+    }
+  },
   methods: {
     sidebar(){
       this.$store.state.sidebarOpen = !this.$store.state.sidebarOpen
-    }
+    },
+    handleCommand(command){
+      if(command == "logout"){
+        this.$store.dispatch('logout')
+        this.$router.push('/login/')
+      }
+    },
+/*     userName(){
+      console.log(firebase.auth().currentUser.email)
+      return firebase.auth().currentUser.email
+    } */
   },
   mounted(){
     setInterval(() => {
       this.curDate = new Date()
     }, 1000)
-  }
+  },
+  
 }
 </script>
 
