@@ -1,29 +1,23 @@
 <template>
-  <div>
-    <Chart/>
-    <SettingFields/>
-    <button @click="console()"></button>
-  </div>
+    <div class="chart">
+      <canvas ref="canvas"></canvas>
+    </div>
 </template>
 
 <script>
 
 
 import {mapActions, mapGetters} from 'vuex'
-import SettingFields from '@/components/SettingFields'
-import Chart from '@/components/Chart'
 import { Pie } from 'vue-chartjs'
 
 export default {
-  name: 'Home',
+  name: 'Chart',
   extends: Pie,
   components: {
-    SettingFields,Chart
   },
   data: ()=>({
     red : 0,
     blue : 0,
-    charts : [1]
   }),
   computed:{
     ...mapGetters([

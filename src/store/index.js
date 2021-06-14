@@ -15,11 +15,15 @@ export default new Vuex.Store({
     currentFiltred: [],
     gridState : "line",
     fields_data: [],
-    error: null
+    error: null,
+    products: [],
   },
   mutations: {
     SET_FIELDS_TO_STATE: (state, fields_data) => {
       state.fields_data = fields_data
+    },
+    SET_PRODUCTS_TO_STATE: (state, products) => {
+      state.products = products
     },
     setError(state, error) {
       state.error = error
@@ -37,11 +41,23 @@ export default new Vuex.Store({
         });
         commit('SET_FIELDS_TO_STATE', fields)
       })
-    }
+    },
+    GET_PRODUCTS_FROM_BD({commit}){
+      return db.collection('products').get().then(querySnapshot => {
+        var products = []
+        querySnapshot.forEach(doc => { 
+          products.push(doc.data())
+        });
+        commit('SET_PRODUCTS_TO_STATE', products)
+      })
+    },
   },
   getters:{
     FIELDS(state){
       return state.fields_data
+    },
+    PRODUCTS(state){
+      return state.products
     },
     error: s => s.error
   },
