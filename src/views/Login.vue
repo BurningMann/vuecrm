@@ -20,7 +20,7 @@
 
     
     </el-form>
-   <button @click="console()">Консоль</button>
+<!--    <button @click="console()">Консоль</button> -->
 </div>
 
 </template>
@@ -58,6 +58,7 @@ export default {
     },
     methods: {
       async submitForm(formName) {
+        
         this.$refs[formName].validate((valid) => {
             if (!valid) {
             return false;
@@ -71,7 +72,7 @@ export default {
             await this.$store.dispatch('login', formData)
             this.$router.push('/')
         } catch (e) {}
-        },
+      },
     console(){
       function getCookie(name) {
         let matches = document.cookie.match(new RegExp(
@@ -79,9 +80,9 @@ export default {
         ));
         return matches ? decodeURIComponent(matches[1]) : undefined;
       }
-      console.log(getCookie('user'))
+      
     }
-    }
+  }
 }
 </script>
 

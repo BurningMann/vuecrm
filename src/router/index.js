@@ -62,15 +62,16 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, form, next) => {
-  const User = firebase.auth().currentUser
   const RequireAuth = to.matched.some(record => record.meta.auth)
-  console.log(firebase.auth())
-  if(RequireAuth && !User){
-    next('/login/')
-  }else{
-    next()
-  }
-
+  firebase.auth().onAuthStateChanged((user) => {
+    if(RequireAuth && !user){
+      next('/login/')
+    }else if(!RequireAuth && user){
+      next('/')
+    }else{
+      next()
+    }
+  });
 })
 
 export default router

@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="chart">
+      <canvas ref="canvas"></canvas>
+    </div>
     <SettingFields/>
     <button @click="console()"></button>
   </div>
@@ -8,25 +11,46 @@
 <script>
 
 import SettingFields from '@/components/SettingFields'
-import firebase from "firebase/app";
-import "firebase/auth";
+import Chart from 'chart.js'
+import { Pie } from 'vue-chartjs'
 
 export default {
   name: 'Home',
+  extends: Pie,
   components: {
     SettingFields
   },
+  data: ()=>({
+
+  }),
+  mounted(){
+    this.renderChart()
+/*     this.renderChart({
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    }) */
+  },
   methods:{
-    console(){
-      console.log(firebase.auth().currentUser)
-/*       function getCookie(name) {
-        let matches = document.cookie.match(new RegExp(
-          "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-        ));
-        return matches ? decodeURIComponent(matches[1]) : undefined;
-      }
-      console.log(getCookie('user')) */
-    }
   }
 }
 </script>
